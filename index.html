@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+  <title>GeneVis — BRCA1 мобильный визуализатор</title>
+
+  <link rel="stylesheet" href="./static/css/style.css">
+  <link rel="manifest" href="./manifest.json">
+
+  <link rel="preconnect" href="https://rest.ensembl.org">
+  <link rel="dns-prefetch" href="https://rest.ensembl.org">
+
+  <link rel="preconnect" href="https://eutils.ncbi.nlm.nih.gov">
+  <link rel="dns-prefetch" href="https://eutils.ncbi.nlm.nih.gov">
+
+  <meta name="theme-color" content="#0B1C26">
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div class="logo-circle">
+        <img src="./static/icons/dna.svg" width="24" height="24">
+      </div>
+
+      <div class="header-center">
+        <h1>GeneVis</h1>
+        <div class="gene-meta">TTN · chr2 · Homo sapiens</div>
+      </div>
+
+      <div class="search-circle" id="searchToggleBtn">
+        <img src="./static/icons/search.svg" width="24" height="24">
+      </div>
+    </div>
+
+    <div id="buildPanel" class="build-panel">
+      <div class="source-buttons">
+        <div data-source="ensembl" class="source-btn active">Ensembl</div>
+        <div data-source="ncbi" class="source-btn">NCBI</div>
+      </div>
+
+      <input type="text" id="geneIdInput" class="build-input" placeholder="Gene ID (e.g., ENST00000460472)" value="ENST00000460472">
+      <input type="text" id="proteinIdInput" class="build-input" placeholder="Protein ID (e.g., Q8WZ42)" value="Q8WZ42">
+
+      <button id="buildGeneBtn" class="build-btn btn">Построить ген</button>
+      <div id="buildStatusMessage" class="build-status"></div>
+    </div>
+
+    <div class="stats-row" id="stats-row">
+      <div class="stat"><span class="stat-number">-</span><span class="stat-label">экзонов</span></div>
+      <div class="stat"><span class="stat-number">-</span><span class="stat-label">домена</span></div>
+      <div class="stat"><span class="stat-number">-</span><span class="stat-label">нуклеотидов</span></div>
+      <div class="stat"><span class="stat-number">-</span><span class="stat-label">аминокислот</span></div>
+    </div>
+
+    <div class="view-container" id="viewContainer">
+      <div id="exonsView" style="padding: 16px;" class="view active-view">
+        <div id="exonsList"></div>
+      </div>
+
+      <div id="mutationsView" class="view">
+        <div class="mut-type-selector" id="mutTypeContainer">
+          <div data-type="find" class="mut-type-btn active">Поиск</div>
+          <div data-type="substitution" class="mut-type-btn">Замена</div>
+          <div data-type="insertion" class="mut-type-btn">Вставка</div>
+          <div data-type="deletion" class="mut-type-btn">Удаление</div>
+        </div>
+
+        <div class="mut-panel">
+          <div id="mutParams"></div>
+
+          <button id="applyMutationBtn" class="btn-icon btn" style="width:100%; justify-content:center; height: 40px;">
+            Применить мутацию
+          </button>
+
+          <button id="resetGeneFullBtn" class="btn-icon" style="width:100%; margin-top:8px; background:#4b5563; font-size: 14px;">
+            Сбросить ген
+          </button>
+
+          <div id="mutResult" class="result-area"></div>
+        </div>
+      </div>
+
+      <div id="domainsView" style="padding: 16px;" class="view">
+        <div id="domainsList"></div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item active-nav" data-nav="exons">
+        <img src="./static/icons/dna.svg" width="24" height="24">
+        <span>Экзоны</span>
+      </div>
+
+      <div class="nav-item" data-nav="mutations">
+        <img src="./static/icons/biohazard.svg" width="24" height="24">
+        <span>Мутации</span>
+      </div>
+
+      <div class="nav-item" data-nav="domains">
+        <img src="./static/icons/shapes.svg" width="24" height="24">
+        <span>Домены</span>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./static/js/main.js"></script>
+</body>
+</html>

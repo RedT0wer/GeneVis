@@ -143,7 +143,7 @@ body {
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 8px;
-  padding: 16px;
+  padding: 15px;
   border-bottom: 1px solid #10374e;
   border-top: 1px solid #10374e;
 }
@@ -299,8 +299,8 @@ body {
 .mut-type-btn {
   background: #111c3a;
   border: 1px solid #255082;
-  padding: 15px;
-  border-radius: 20px;
+  padding: 10px;
+  border-radius: 14px;
   font-size: 1.0rem;
   cursor: pointer;
 }

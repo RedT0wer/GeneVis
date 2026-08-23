@@ -53,7 +53,7 @@ export function getOverlayCanvas(canvas) {
 }
 
 export function calculateLayout(sequence, containerWidth) {
-  const maxWidth = Math.max(containerWidth - 20, MIN_CANVAS_WIDTH);
+  const maxWidth = containerWidth;
 
   const lines = [];
   let currentLine = '';

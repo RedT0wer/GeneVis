@@ -31,26 +31,40 @@ import {
 import { ensureCardExpanded } from './lazy.js';
 
 export function canvasClickHandler(e) {
-  const canvas = e.currentTarget;
-  const data = canvas.seqData;
+  const eventCanvas = e.currentTarget;
 
-  if (!data) return;
+  const baseCanvas = eventCanvas.__base || eventCanvas;
 
-  const rect = canvas.getBoundingClientRect();
+  const seqData = eventCanvas.seqData || baseCanvas.seqData;
 
-  const scaleX = (data.cssWidth || rect.width) / rect.width;
-  const scaleY = (data.cssHeight || rect.height) / rect.height;
+  if (!seqData) return;
+
+  const rect = eventCanvas.getBoundingClientRect();
+
+  if (!rect.width || !rect.height) return;
+
+  const cssWidth = seqData.cssWidth || rect.width;
+  const cssHeight = seqData.cssHeight || rect.height;
+
+  const scaleX = cssWidth / rect.width;
+  const scaleY = cssHeight / rect.height;
 
   const mouseX = (e.clientX - rect.left) * scaleX;
   const mouseY = (e.clientY - rect.top) * scaleY;
 
-  const globalIdx = getCharIndexFromMouse(mouseX, mouseY, data);
+  const globalIdx = getCharIndexFromMouse(mouseX, mouseY, seqData);
 
   if (globalIdx === -1) return;
 
-  const ch = data.sequence[globalIdx];
+  const ch = seqData.sequence[globalIdx];
 
-  showContextMenu(data.type, ch, globalIdx, data.entityId, data.sequence);
+  showContextMenu(
+    seqData.type,
+    ch,
+    globalIdx,
+    seqData.entityId,
+    seqData.sequence
+  );
 }
 
 function getExonsForCodon(ui, globalNucPos0Based) {

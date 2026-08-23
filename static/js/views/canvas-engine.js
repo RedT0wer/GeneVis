@@ -279,7 +279,11 @@ export function drawSequenceGrid(
   const ctx = canvas.getContext('2d');
   const container = canvas.parentElement;
 
-  const containerWidth = container.offsetWidth || container.clientWidth || (MIN_CANVAS_WIDTH + 20);
+  const containerWidth =
+    container.offsetWidth ||
+    container.clientWidth ||
+    (MIN_CANVAS_WIDTH + 20);
+
   const layout = calculateLayout(sequence, containerWidth);
 
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -287,26 +291,13 @@ export function drawSequenceGrid(
   const cssWidth = layout.canvasWidth;
   const cssHeight = layout.canvasHeight;
 
-  canvas.width = Math.round(cssWidth * dpr);
-  canvas.height = Math.round(cssHeight * dpr);
+  canvas.width = Math.max(1, Math.round(cssWidth * dpr));
+  canvas.height = Math.max(1, Math.round(cssHeight * dpr));
 
   canvas.style.width = `${cssWidth}px`;
   canvas.style.height = `${cssHeight}px`;
 
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-  const overlay = container.querySelector('.overlay-canvas');
-
-  if (overlay) {
-    overlay.width = canvas.width;
-    overlay.height = canvas.height;
-
-    overlay.style.width = `${overlay.width}px`;
-    overlay.style.height = `${overlay.height}px`;
-
-    const overlayCtx = overlay.getContext('2d');
-    overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
-  }
 
   ctx.font = `${FONT_SIZE}px monospace`;
   ctx.textBaseline = 'middle';
@@ -320,17 +311,23 @@ export function drawSequenceGrid(
 
   for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
     const line = lines[lineIdx];
+    const lineStartIndex = lines.slice(0, lineIdx).join('').length;
 
     let xOffset = CANVAS_PADDING;
 
     for (let i = 0; i < line.length; i++) {
       const ch = line[i];
-      const globalIdx = lines.slice(0, lineIdx).join('').length + i;
+      const globalIdx = lineStartIndex + i;
 
       let bgColor;
 
       if (type === 'exon') {
-        bgColor = getExonBlockColor(globalIdx, utr5Len, cdsLen, cdsGlobalOffset);
+        bgColor = getExonBlockColor(
+          globalIdx,
+          utr5Len,
+          cdsLen,
+          cdsGlobalOffset
+        );
       } else {
         bgColor = getDomainBlockColor(ch, state.domainColorEnabled);
       }
@@ -358,14 +355,37 @@ export function drawSequenceGrid(
     cdsLen,
     utr3Len,
     cdsGlobalOffset,
+
+    // Обязательно для корректного клика
     cssWidth,
     cssHeight,
     dpr
   };
 
+  const overlay = container.querySelector('.overlay-canvas');
+
   if (overlay) {
+    overlay.width = canvas.width;
+    overlay.height = canvas.height;
+
+    // Важно: у overlay должны быть те же CSS-размеры,
+    // а не физические пиксели
+    overlay.style.width = `${cssWidth}px`;
+    overlay.style.height = `${cssHeight}px`;
+
+    const overlayCtx = overlay.getContext('2d');
+
+    overlayCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    overlayCtx.font = `${FONT_SIZE}px monospace`;
+    overlayCtx.textBaseline = 'middle';
+    overlayCtx.textAlign = 'center';
+
+    overlayCtx.clearRect(0, 0, cssWidth, cssHeight);
+
     overlay.seqData = canvas.seqData;
     overlay.__base = canvas;
+
     canvas.__overlay = overlay;
   }
 }

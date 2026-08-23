@@ -1,4 +1,4 @@
-const CACHE_NAME = "genevis-v4";
+const CACHE_NAME = "genevis-v5";
 
 const urlsToCache = [
   "./",

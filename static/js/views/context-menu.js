@@ -31,20 +31,18 @@ import {
 import { ensureCardExpanded } from './lazy.js';
 
 export function canvasClickHandler(e) {
-  const overlay = e.currentTarget;
-  const canvas = overlay.__base || overlay;
+  const canvas = e.currentTarget;
+  const data = canvas.seqData;
 
-  const rect = overlay.getBoundingClientRect();
+  if (!data) return;
 
-  const scaleX = overlay.width / rect.width || 1;
-  const scaleY = overlay.height / rect.height || 1;
+  const rect = canvas.getBoundingClientRect();
+
+  const scaleX = (data.cssWidth || rect.width) / rect.width;
+  const scaleY = (data.cssHeight || rect.height) / rect.height;
 
   const mouseX = (e.clientX - rect.left) * scaleX;
   const mouseY = (e.clientY - rect.top) * scaleY;
-
-  const data = overlay.seqData || canvas.seqData;
-
-  if (!data) return;
 
   const globalIdx = getCharIndexFromMouse(mouseX, mouseY, data);
 

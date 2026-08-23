@@ -282,11 +282,18 @@ export function drawSequenceGrid(
   const containerWidth = container.offsetWidth || container.clientWidth || (MIN_CANVAS_WIDTH + 20);
   const layout = calculateLayout(sequence, containerWidth);
 
-  canvas.width = layout.canvasWidth;
-  canvas.height = layout.canvasHeight;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-  canvas.style.width = `${canvas.width}px`;
-  canvas.style.height = `${canvas.height}px`;
+  const cssWidth = layout.canvasWidth;
+  const cssHeight = layout.canvasHeight;
+
+  canvas.width = Math.round(cssWidth * dpr);
+  canvas.height = Math.round(cssHeight * dpr);
+
+  canvas.style.width = `${cssWidth}px`;
+  canvas.style.height = `${cssHeight}px`;
+
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   const overlay = container.querySelector('.overlay-canvas');
 
@@ -305,7 +312,7 @@ export function drawSequenceGrid(
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'center';
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, cssWidth, cssHeight);
 
   const { lines } = layout;
 
@@ -350,7 +357,10 @@ export function drawSequenceGrid(
     utr5Len,
     cdsLen,
     utr3Len,
-    cdsGlobalOffset
+    cdsGlobalOffset,
+    cssWidth,
+    cssHeight,
+    dpr
   };
 
   if (overlay) {
